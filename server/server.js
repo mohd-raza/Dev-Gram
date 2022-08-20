@@ -9,6 +9,7 @@ const postRoute = require("./routes/api/posts");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+app.use(express.json({ extended: false }));
 app.get("/api", (req, res) => res.send("Api running"));
 
 // define routes
@@ -17,6 +18,7 @@ app.use("/api/users", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/profile", profileRoute);
 app.use("/api/posts", postRoute);
+
 app.listen(PORT, () => {
   console.log(`listening on ${PORT}`);
 });

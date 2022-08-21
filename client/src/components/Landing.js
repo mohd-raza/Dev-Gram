@@ -45,6 +45,9 @@ const Landing = () => {
             ]}
           />
         </p>
+        <h3 className="text-center text-white text-2xl mt-4">
+          Copyright to be added
+        </h3>
       </div>
     </>
   );

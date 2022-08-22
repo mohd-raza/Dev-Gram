@@ -5,7 +5,7 @@ const Landing = () => {
   const defaultOptions1 = {
     loop: true,
     autoplay: true,
-    animationData: require("../utils/108333-coding.json"),
+    animationData: require("../../utils/108333-coding.json"),
     rendererSettings: {
       preserveAspectRatio: "xMidYMid slice",
     },
@@ -13,7 +13,7 @@ const Landing = () => {
   const defaultOptions2 = {
     loop: true,
     autoplay: true,
-    animationData: require("../utils/40238-happy-coding.json"),
+    animationData: require("../../utils/40238-happy-coding.json"),
     rendererSettings: {
       preserveAspectRatio: "xMidYMid slice",
     },

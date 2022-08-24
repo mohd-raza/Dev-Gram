@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { connect } from "react-redux";
 import { setAlert } from "../../actions/alert";
+import { register } from "../../actions/auth";
 import PropTypes from "prop-types";
-import Alert from "../layout/Alert";
-const Signup = ({ setAlert }) => {
-  const [show, setShow] = useState(false);
+const Signup = ({ setAlert, register }) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -23,29 +22,8 @@ const Signup = ({ setAlert }) => {
     e.preventDefault();
     if (password !== password2) {
       setAlert("password do not match", "danger");
-      setShow(true);
     } else {
-      const newUser = {
-        name,
-        email,
-        password,
-      };
-      try {
-        const config = {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        };
-        const body = JSON.stringify(newUser);
-        const res = await axios.post(
-          "http://localhost:5000/api/users",
-          body,
-          config
-        );
-        console.log(res.data);
-      } catch (err) {
-        console.error(err.response.data);
-      }
+      register({ name, email, password });
     }
   };
   return (
@@ -135,6 +113,7 @@ const Signup = ({ setAlert }) => {
 
 Signup.propTypes = {
   setAlert: PropTypes.func.isRequired,
+  register: PropTypes.func.isRequired,
 };
 
-export default connect(null, { setAlert })(Signup);
+export default connect(null, { setAlert, register })(Signup);

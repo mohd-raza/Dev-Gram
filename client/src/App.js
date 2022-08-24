@@ -9,7 +9,17 @@ import Signup from "./components/auth/Signup";
 import { Provider } from "react-redux";
 import store from "./store";
 import Alert from "./components/layout/Alert";
+import { loadUser } from "./actions/auth";
+import setAuthToken from "./utils/setAuthToken";
+import { useEffect } from "react";
+
+if (localStorage.token) {
+  setAuthToken(localStorage.token);
+}
 function App() {
+  useEffect(() => {
+    store.dispatch(loadUser());
+  }, []);
   return (
     <Provider store={store}>
       <BrowserRouter>

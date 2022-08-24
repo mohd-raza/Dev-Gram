@@ -1,6 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
-const Navbar = () => {
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { logout } from "../../actions/auth";
+const Navbar = ({ auth: { isAuthenticated, loading }, logout }) => {
+  const authLinks = {};
+  const guestLink = {};
   return (
     <>
       <nav className="p-3 bg-black font-body">
@@ -37,51 +42,92 @@ const Navbar = () => {
               ></path>
             </svg>
           </button>
-          <div
-            className="hidden w-full md:block md:w-auto"
-            id="navbar-solid-bg"
-          >
-            <ul className="flex flex-col mt-4 bg-gray-50 rounded-lg md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-transparent dark:bg-gray-800 md:dark:bg-transparent dark:border-gray-700 md: mr-10">
-              <li>
-                <a
-                  href="/"
-                  className="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent dark:text-gray-400  md:p-0
+          {!loading && (
+            <>
+              {isAuthenticated ? (
+                <div
+                  className="hidden w-full md:block md:w-auto"
+                  id="navbar-solid-bg"
+                >
+                  <ul className="flex flex-col mt-4 bg-gray-50 rounded-lg md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-transparent dark:bg-gray-800 md:dark:bg-transparent dark:border-gray-700 md: mr-10">
+                    {/* <li>
+                      <a
+                        href="/"
+                        className="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent dark:text-gray-400  md:p-0
                   md:dark:hover:text-white  dark:bg-blue-600 md:dark:bg-transparent md:text-xl"
-                  aria-current="page"
+                        aria-current="page"
+                      >
+                        Developers
+                      </a>
+                    </li> */}
+                    {/* <li>
+                      <Link
+                        to="/signup"
+                        className="block py-2 pr-4 pl-3 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent md:text-xl"
+                      >
+                        Signup
+                      </Link>
+                    </li> */}
+                    <li>
+                      <a
+                        href="#!"
+                        className="block py-2 pr-4 pl-3 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent md:text-xl"
+                        onClick={logout}
+                      >
+                        Logout
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              ) : (
+                <div
+                  className="hidden w-full md:block md:w-auto"
+                  id="navbar-solid-bg"
                 >
-                  Developers
-                </a>
-              </li>
-              <li>
-                <Link
-                  to="/signup"
-                  className="block py-2 pr-4 pl-3 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent md:text-xl"
-                >
-                  Signup
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/login"
-                  className="block py-2 pr-4 pl-3 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent md:text-xl"
-                >
-                  Login
-                </Link>
-              </li>
-              <li>
-                {/* <a
-                  href="/"
-                  className="block py-2 pr-4 pl-3 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent md:text-xl"
-                >
-                  Contact
-                </a> */}
-              </li>
-            </ul>
-          </div>
+                  <ul className="flex flex-col mt-4 bg-gray-50 rounded-lg md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-transparent dark:bg-gray-800 md:dark:bg-transparent dark:border-gray-700 md: mr-10">
+                    <li>
+                      <a
+                        href="/"
+                        className="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent dark:text-gray-400  md:p-0
+                  md:dark:hover:text-white  dark:bg-blue-600 md:dark:bg-transparent md:text-xl"
+                        aria-current="page"
+                      >
+                        Developers
+                      </a>
+                    </li>
+                    <li>
+                      <Link
+                        to="/signup"
+                        className="block py-2 pr-4 pl-3 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent md:text-xl"
+                      >
+                        Signup
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/login"
+                        className="block py-2 pr-4 pl-3 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent md:text-xl"
+                      >
+                        Login
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </nav>
     </>
   );
 };
 
-export default Navbar;
+Navbar.propTypes = {
+  logout: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+export default connect(mapStateToProps, { logout })(Navbar);

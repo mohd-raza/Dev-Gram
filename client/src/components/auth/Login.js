@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-
-const Login = () => {
+import { connect } from "react-redux";
+import { Link, Navigate } from "react-router-dom";
+import PropTypes from "prop-types";
+import { login } from "../../actions/auth";
+const Login = ({ login, isAuthenticated }) => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -11,6 +13,16 @@ const Login = () => {
   const onchange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+  const handleClick = async (e) => {
+    e.preventDefault();
+    console.log(email, password);
+    login(email, password);
+  };
+
+  // redirect if logged in
+  if (isAuthenticated) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <>
@@ -50,7 +62,10 @@ const Login = () => {
                     </div>
 
                     <div className="relative">
-                      <button className="bg-yellow-500 text-white rounded-md px-2 py-1">
+                      <button
+                        className="bg-yellow-500 text-white rounded-md px-2 py-1"
+                        onClick={(e) => handleClick(e)}
+                      >
                         Submit
                       </button>
                     </div>
@@ -74,4 +89,14 @@ const Login = () => {
   );
 };
 
-export default Login;
+Login.propTypes = {
+  login: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool,
+};
+
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
+export default connect(mapStateToProps, {
+  login,
+})(Login);

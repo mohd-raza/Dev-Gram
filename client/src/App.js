@@ -12,6 +12,8 @@ import Alert from "./components/layout/Alert";
 import { loadUser } from "./actions/auth";
 import setAuthToken from "./utils/setAuthToken";
 import { useEffect } from "react";
+import Dashboard from "./components/dashboard/Dashboard";
+import PrivateRoute from "./components/routing/PrivateRoute";
 
 if (localStorage.token) {
   setAuthToken(localStorage.token);
@@ -29,6 +31,10 @@ function App() {
             <Route path="/" exact element={<Landing />} />
             <Route path="/login" exact element={<Login />} />
             <Route path="/signup" exact element={<Signup />} />
+            <Route element={<PrivateRoute />}>
+              <Route path="/" element={<Landing />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+            </Route>
           </Routes>
           <Alert />
         </div>

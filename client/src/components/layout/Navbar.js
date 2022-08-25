@@ -4,8 +4,6 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { logout } from "../../actions/auth";
 const Navbar = ({ auth: { isAuthenticated, loading }, logout }) => {
-  const authLinks = {};
-  const guestLink = {};
   return (
     <>
       <nav className="p-3 bg-black font-body">

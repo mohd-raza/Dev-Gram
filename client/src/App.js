@@ -14,6 +14,7 @@ import setAuthToken from "./utils/setAuthToken";
 import { useEffect } from "react";
 import Dashboard from "./components/dashboard/Dashboard";
 import PrivateRoute from "./components/routing/PrivateRoute";
+import CreateProfile from "./components/profile-forms/CreateProfile";
 
 if (localStorage.token) {
   setAuthToken(localStorage.token);
@@ -25,7 +26,7 @@ function App() {
   return (
     <Provider store={store}>
       <BrowserRouter>
-        <div className="bg-black h-screen">
+        <div className="bg-black min-h-screen">
           <Navbar />
           <Routes>
             <Route path="/" exact element={<Landing />} />
@@ -34,6 +35,7 @@ function App() {
             <Route element={<PrivateRoute />}>
               <Route path="/" element={<Landing />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/create-profile" element={<CreateProfile />} />
             </Route>
           </Routes>
           <Alert />

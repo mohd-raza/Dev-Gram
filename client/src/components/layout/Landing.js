@@ -1,7 +1,14 @@
 import React from "react";
 import Lottie from "react-lottie";
+import { connect } from "react-redux";
 import Typical from "react-typical";
-const Landing = () => {
+import PropTypes from "prop-types";
+import { Navigate } from "react-router-dom";
+
+const Landing = ({ isAuthenticated }) => {
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" />;
+  }
   const defaultOptions1 = {
     loop: true,
     autoplay: true,
@@ -53,4 +60,11 @@ const Landing = () => {
   );
 };
 
-export default Landing;
+Landing.propTypes = {
+  isAuthenticated: PropTypes.bool,
+};
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps)(Landing);

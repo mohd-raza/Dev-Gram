@@ -1,7 +1,75 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { Link, useMatch, useNavigate } from "react-router-dom";
+import { getCurrentProfile, createProfile } from "../../actions/profile";
+import PropTypes from "prop-types";
+const initialState = {
+  company: "",
+  website: "",
+  location: "",
+  status: "",
+  skills: "",
+  githubusername: "",
+  bio: "",
+  twitter: "",
+  facebook: "",
+  linkedin: "",
+  youtube: "",
+  instagram: "",
+};
+const CreateProfile = ({
+  profile: { profile, loading },
+  createProfile,
+  getCurrentProfile,
+}) => {
+  const [formData, setFormData] = useState(initialState);
+  const {
+    company,
+    website,
+    location,
+    status,
+    skills,
+    githubusername,
+    bio,
+    twitter,
+    facebook,
+    linkedin,
+    youtube,
+    instagram,
+  } = formData;
+  const navigate = useNavigate();
+  const creatingProfile = useMatch("/create-profile");
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  const handleClick = (e) => {
+    e.preventDefault();
+    console.log(formData);
+    createProfile(formData, navigate, profile ? true : false);
+  };
 
-const CreateProfile = () => {
+  useEffect(() => {
+    // if there is no profile, attempt to fetch one
+    if (!profile) getCurrentProfile();
+
+    // if we finished loading and we do have a profile
+    // then build our profileData
+    if (!loading && profile) {
+      const profileData = { ...initialState };
+      for (const key in profile) {
+        if (key in profileData) profileData[key] = profile[key];
+      }
+      for (const key in profile.social) {
+        if (key in profileData) profileData[key] = profile.social[key];
+      }
+      // the skills may be an array from our API response
+      if (Array.isArray(profileData.skills))
+        profileData.skills = profileData.skills.join(", ");
+      // set local state with the profileData
+      setFormData(profileData);
+    }
+  }, [loading, getCurrentProfile, profile]);
+
   return (
     <>
       <div className="mt-8 flex flex-row justify-center items-center">
@@ -16,11 +84,16 @@ const CreateProfile = () => {
                     Create Your Profile
                   </h1>
                 </div>
-                <div className="flex flex-row justify-between">
+                <div className="flex flex-row justify-around ">
                   <div className="divide-y divide-gray-200">
                     <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                       <div className="relative">
-                        <select name="status" className="border-2 rounded-lg">
+                        <select
+                          name="status"
+                          className="border-2 rounded-lg mt-[11px]"
+                          value={status}
+                          onChange={(e) => handleChange(e)}
+                        >
                           <option>Select Professional Status</option>
                           <option value="Developer">Developer</option>
                           <option value="Junior Developer">
@@ -44,32 +117,50 @@ const CreateProfile = () => {
                         <input
                           name="company"
                           type="text"
-                          className="peer  h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
+                          className="peer  h-10 w-[200px] border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
                           placeholder="Company"
-                          // value={email}
-                          // onChange={(e) => onchange(e)}
-                          required
+                          value={company}
+                          onChange={(e) => handleChange(e)}
                         />
                       </div>
                       <div className="relative">
                         <input
-                          name="password"
+                          name="website"
                           type="text"
-                          className="peer  h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
+                          className="peer  h-10 w-[200px] border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
                           placeholder="Website"
-                          minLength="6"
-                          // value={password}
-                          // onChange={(e) => onchange(e)}
+                          value={website}
+                          onChange={(e) => handleChange(e)}
                         />
                       </div>
                       <div className="relative">
                         <input
-                          name="password2"
+                          name="location"
                           type="text"
-                          className="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
+                          className="peer h-10 w-[200px] border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
                           placeholder="Location"
-                          // value={password2}
-                          // onChange={(e) => onchange(e)}
+                          value={location}
+                          onChange={(e) => handleChange(e)}
+                        />
+                      </div>
+                      <div className="relative">
+                        <input
+                          name="skills"
+                          type="text"
+                          className="peer h-10 w-[200px] border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
+                          placeholder="Skills"
+                          value={skills}
+                          onChange={(e) => handleChange(e)}
+                        />
+                      </div>
+                      <div className="relative">
+                        <input
+                          name="githubusername"
+                          type="text"
+                          className="peer h-10 w-[200px] border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
+                          placeholder="Github Username"
+                          value={githubusername}
+                          onChange={(e) => handleChange(e)}
                         />
                       </div>
                     </div>
@@ -78,38 +169,76 @@ const CreateProfile = () => {
                     <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                       <div className="relative">
                         <input
-                          name="name"
+                          name="bio"
                           type="text"
-                          className="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
-                          placeholder="Skills"
+                          className="peer h-10 w-[200px] border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
+                          placeholder="Bio"
                           required
-                          // value={name}
-                          // onChange={(e) => onchange(e)}
+                          value={bio}
+                          onChange={(e) => handleChange(e)}
                         />
                       </div>
                       <div className="relative">
                         <input
-                          name="email"
+                          name="twitter"
                           type="text"
-                          className="peer  h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
-                          placeholder="Github Username"
-                          // value={email}
-                          // onChange={(e) => onchange(e)}
-                          required
+                          className="peer  h-10 w-[200px] border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
+                          placeholder="Twitter"
+                          value={twitter}
+                          onChange={(e) => handleChange(e)}
                         />
                       </div>
                       <div className="relative">
                         <input
-                          name="password"
+                          name="linkedin"
                           type="text"
-                          className="peer  h-[5rem] w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
-                          placeholder="a short bio of yourself"
-                          minLength="6"
-                          // value={password}
-                          // onChange={(e) => onchange(e)}
+                          className="peer  h-10 w-[200px] border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
+                          placeholder="Linkedin"
+                          value={linkedin}
+                          onChange={(e) => handleChange(e)}
+                        />
+                      </div>
+                      <div className="relative">
+                        <input
+                          name="instagram"
+                          type="text"
+                          className="peer  h-10 w-[200px] border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
+                          placeholder="Instagram"
+                          value={instagram}
+                          onChange={(e) => handleChange(e)}
+                        />
+                      </div>
+                      <div className="relative">
+                        <input
+                          name="facebook"
+                          type="text"
+                          className="peer  h-10 w-[200px] border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
+                          placeholder="Facebook"
+                          value={facebook}
+                          onChange={(e) => handleChange(e)}
+                        />
+                      </div>
+                      <div className="relative">
+                        <input
+                          name="youtube"
+                          type="text"
+                          className="peer  h-10 w-[200px] border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
+                          placeholder="Youtube"
+                          value={youtube}
+                          onChange={(e) => handleChange(e)}
                         />
                       </div>
                     </div>
+                  </div>
+                </div>
+                <div>
+                  <div className="relative">
+                    <button
+                      className="bg-cyan-500 text-white rounded-md px-2 py-1"
+                      onClick={(e) => handleClick(e)}
+                    >
+                      Submit
+                    </button>
                   </div>
                 </div>
               </div>
@@ -121,5 +250,14 @@ const CreateProfile = () => {
     </>
   );
 };
-
-export default CreateProfile;
+CreateProfile.propTypes = {
+  createProfile: PropTypes.func.isRequired,
+  getCurrentProfile: PropTypes.func.isRequired,
+  profile: PropTypes.object.isRequired,
+};
+const mapStateToProps = (state) => ({
+  profile: state.profile,
+});
+export default connect(mapStateToProps, { createProfile, getCurrentProfile })(
+  CreateProfile
+);

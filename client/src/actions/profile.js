@@ -1,14 +1,72 @@
-import axios from "axios";
+import api from "../utils/api";
 import { setAlert } from "./alert";
-import { useHistory } from "react-router-dom";
 
-import { GET_PROFILE, PROFILE_ERROR, UPDATE_PROFILE } from "./types";
+import {
+  CLEAR_PROFILE,
+  GET_PROFILE,
+  GET_PROFILES,
+  GET_REPOS,
+  NO_REPOS,
+  PROFILE_ERROR,
+  UPDATE_PROFILE,
+} from "./types";
 
 // Get current users profile
 export const getCurrentProfile = () => async (dispatch) => {
   try {
-    const res = await axios.get("http://localhost:5000/api/profile/me");
+    const res = await api.get("/profile/me");
 
+    dispatch({
+      type: GET_PROFILE,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
+
+// Get all profiles
+
+export const getProfiles = () => async (dispatch) => {
+  dispatch({ type: CLEAR_PROFILE });
+  try {
+    const res = await api.get("/profile");
+    dispatch({
+      type: GET_PROFILES,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
+
+// Get Github repos
+export const getGithubRepos = (username) => async (dispatch) => {
+  try {
+    const res = await api.get(`/profile/github/${username}`);
+
+    dispatch({
+      type: GET_REPOS,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: NO_REPOS,
+    });
+  }
+};
+
+// Get profile by id
+
+export const getProfileById = (userId) => async (dispatch) => {
+  try {
+    const res = await api.get(`/profile/user/${userId}`);
     dispatch({
       type: GET_PROFILE,
       payload: res.data,
@@ -26,16 +84,7 @@ export const createProfile =
   (formData, navigate, edit = false) =>
   async (dispatch) => {
     try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-      const res = await axios.post(
-        "http://localhost:5000/api/profile",
-        formData,
-        config
-      );
+      const res = await api.post("/profile", formData);
 
       dispatch({
         type: GET_PROFILE,
@@ -66,10 +115,7 @@ export const createProfile =
 
 export const addExperience = (formData, navigate) => async (dispatch) => {
   try {
-    const res = await axios.post(
-      "http://localhost:5000/api/profile/experience",
-      formData
-    );
+    const res = await api.post("/profile/experience", formData);
     dispatch({
       type: UPDATE_PROFILE,
       payload: res.data,
@@ -95,10 +141,7 @@ export const addExperience = (formData, navigate) => async (dispatch) => {
 
 export const addEducation = (formData, navigate) => async (dispatch) => {
   try {
-    const res = await axios.post(
-      "http://localhost:5000/api/profile/education",
-      formData
-    );
+    const res = await api.post("/profile/education", formData);
     dispatch({
       type: UPDATE_PROFILE,
       payload: res.data,
@@ -124,9 +167,7 @@ export const addEducation = (formData, navigate) => async (dispatch) => {
 
 export const deleteExperience = (id) => async (dispatch) => {
   try {
-    const res = await axios.delete(
-      `http://localhost:5000/api/profile/experience/${id}`
-    );
+    const res = await api.delete(`/profile/experience/${id}`);
     dispatch({
       type: UPDATE_PROFILE,
       payload: res.data,
@@ -143,9 +184,7 @@ export const deleteExperience = (id) => async (dispatch) => {
 // delete Education
 export const deleteEducation = (id) => async (dispatch) => {
   try {
-    const res = await axios.delete(
-      `http://localhost:5000/api/profile/education/${id}`
-    );
+    const res = await api.delete(`/profile/education/${id}`);
     dispatch({
       type: UPDATE_PROFILE,
       payload: res.data,
@@ -164,7 +203,7 @@ export const deleteEducation = (id) => async (dispatch) => {
 export const deleteAccount = () => async (dispatch) => {
   if (window.confirm("Are you sure? this cannot be undone!!")) {
     try {
-      await axios.delete("/profile");
+      await api.delete("/profile");
     } catch (err) {
       dispatch({
         type: PROFILE_ERROR,
